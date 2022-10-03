@@ -55,13 +55,13 @@ const twitPrimeOrders = async () => {
         tg_channel_message1,
       } = order;
       const twit = `
-      ${type === 'sell' ? '🔴 Venta' : '🟢 Compra'} ${
+      ${type === 'sell' ? '🔴 Venta #Bitcoin ' : '🟢 Compra #Bitcoin '} ${
         price_margin === 0
           ? 'a precio de Mercado!'
           : 'con prima de ' + price_margin + ' %'
       }
      
-      ${description}
+      ${description.substr(0, 80) + '...'}
       ${
         !community_id
           ? 'https://t.me/p2plightning/' + tg_channel_message1
