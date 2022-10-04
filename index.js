@@ -71,16 +71,17 @@ const twitPrimeOrders = async () => {
       twitedOrders.push(order);
       twitedId.push(order._id);
 
-      twitterClient.tweets
-        .statusesUpdate({
-          status: twit,
-        })
-        .then((response) => {
-          console.log('Twited: ', response);
-        })
-        .catch((error) => {
-          console.log('Error: ', error);
-        });
+      // twitterClient.tweets
+      //   .statusesUpdate({
+      //     status: twit,
+      //   })
+      //   .then((response) => {
+      //     console.log('Twited: ', response);
+      //   })
+      //   .catch((error) => {
+      //     console.log('Error: ', error);
+      //   });
+    console.log(twit);
     }
     console.log(twitedId);
   });
