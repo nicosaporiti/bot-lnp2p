@@ -1,18 +1,13 @@
 require('dotenv').config();
-const { TwitterClient } = require('twitter-api-client');
+const TelegramBot = require('node-telegram-bot-api');
 const { sellOrders, buyOrders } = require('./helpers/getOrders');
 const { getCommunityOrderChannel } = require('./helpers/getCommunities');
-
-const twitterClient = new TwitterClient({
-  apiKey: process.env.TWITTER_API_KEY,
-  apiSecret: process.env.TWITTER_API_SECRET,
-  accessToken: process.env.TWITTER_ACCESS_TOKEN,
-  accessTokenSecret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
-});
 
 // Prime Orders
 
 let primeOrders = [];
+const token = process.env.TELEGRAM_TOKEN;
+const bot = new TelegramBot(token, { polling: true });
 
 const primeBuyOrdersbyMargin = async () => {
   const orders = await buyOrders();
@@ -48,7 +43,6 @@ const twitPrimeOrders = async () => {
   primeOrders.forEach(async (order) => {
     if (twitedId.includes(order._id) === false) {
       const {
-        description,
         type,
         price_margin,
         community_id,
@@ -60,8 +54,6 @@ const twitPrimeOrders = async () => {
           ? 'a precio de Mercado!'
           : 'con prima de ' + price_margin + ' %'
       }
-     
-      ${description.substr(0, 80) + '...'}
       ${
         !community_id
           ? 'https://t.me/p2plightning/' + tg_channel_message1
@@ -71,21 +63,10 @@ const twitPrimeOrders = async () => {
       twitedOrders.push(order);
       twitedId.push(order._id);
 
-      twitterClient.tweets
-        .statusesUpdate({
-          status: twit,
-        })
-        .then((response) => {
-          console.log('Twited: ', response);
-        })
-        .catch((error) => {
-          console.log('Error: ', error);
-        });
-    // console.log(twit);
+      bot.sendMessage('-1001848129404', twit);
     }
     console.log(twitedId);
   });
-  // console.log(`Total órdenes en arbitraje: ${twitedOrders.length}`);
 };
 
 console.log(`
