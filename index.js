@@ -38,35 +38,34 @@ let twitedId = [];
 
 // Twit prime orders
 const twitPrimeOrders = async () => {
-  primeOrders = await addPrimeOrders();
+  try {
+    primeOrders = await addPrimeOrders();
 
-  primeOrders.forEach(async (order) => {
-    if (twitedId.includes(order._id) === false) {
-      const {
-        type,
-        price_margin,
-        community_id,
-        tg_channel_message1,
-      } = order;
-      const twit = `
-      ${type === 'sell' ? '🔴 Venta #Bitcoin ' : '🟢 Compra #Bitcoin '} ${
-        price_margin === 0
-          ? 'a precio de Mercado!'
-          : 'con prima de ' + price_margin + ' %'
+    primeOrders.forEach(async (order) => {
+      if (twitedId.includes(order._id) === false) {
+        const { type, price_margin, community_id, tg_channel_message1 } = order;
+        const twit = `
+        ${type === 'sell' ? '🔴 Venta #Bitcoin ' : '🟢 Compra #Bitcoin '} ${
+          price_margin === 0
+            ? 'a precio de Mercado!'
+            : 'con prima de ' + price_margin + ' %'
+        }
+        ${
+          !community_id
+            ? 'https://t.me/p2plightning/' + tg_channel_message1
+            : await getCommunityOrderChannel(community_id, tg_channel_message1)
+        }`;
+
+        twitedOrders.push(order);
+        twitedId.push(order._id);
+
+        bot.sendMessage('-1001848129404', twit);
       }
-      ${
-        !community_id
-          ? 'https://t.me/p2plightning/' + tg_channel_message1
-          : await getCommunityOrderChannel(community_id, tg_channel_message1)
-      }`;
-
-      twitedOrders.push(order);
-      twitedId.push(order._id);
-
-      bot.sendMessage('-1001848129404', twit);
-    }
-    console.log(twitedId);
-  });
+      console.log(twitedId);
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 console.log(`
